@@ -9,11 +9,30 @@
 </head>
 
 <body>
+    <div class="navbar">
+
+    <div class="logo">
+        Student Performance Predictor
+    </div>
+
+    <div class="nav-right">
+
+        <span>
+            Welcome, {{ session['user'] }}
+        </span>
+
+        <a href="/logout">
+            <button class="logout-btn">
+                Logout
+            </button>
+        </a>
+
+    </div>
+
+</div>
 
     <div class="container">
-        <a href="/logout">
-    <button>Logout</button>
-</a>
+        <div class="card">
 
         <h1>Student Performance Predictor</h1>
 
@@ -40,6 +59,7 @@
                 <h2>Predicted Grade: {{ grade }}</h2>
 
             </div>
+        </div>
 
         {% endif %}
         <h2>Prediction History</h2>

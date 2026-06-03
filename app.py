@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import plotly.express as px
 import sqlite3
+import statsmodels.api as sm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from sklearn.model_selection import train_test_split
@@ -29,12 +30,40 @@ fig = px.scatter(
     x="study_hours",
     y="final_score",
     title="Study Hours vs Final Score",
-    template="plotly_dark"
+    template="plotly_dark",
+    trendline="ols"
 )
 fig.update_layout(
-    width=400,
-    height=350,
-    margin=dict(l=20, r=20, t=40, b=20)
+
+    autosize=True,
+
+    height=450,
+
+    paper_bgcolor="#1e1e1e",
+
+    plot_bgcolor="#1e1e1e",
+
+    font=dict(
+        color="white",
+        size=14
+    ),
+
+    title_font=dict(
+        size=22
+    ),
+
+    margin=dict(
+        l=20,
+        r=20,
+        t=50,
+        b=20
+    )
+)
+fig.update_traces(
+
+    marker=dict(
+        size=10
+    )
 )
 
 graph_html = fig.to_html(
