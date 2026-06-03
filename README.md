@@ -48,10 +48,10 @@ https://student-performance-predictor-1mlt.onrender.com
 ![Dashboard](screenshots/dashboard.jpeg)
 
 ### Login Page
-![Login](screenshots/login.png)
+![Login](screenshots/login.jpeg)
 
 ### Signup Page
-![Signup](screenshots/signup.png)
+![Signup](screenshots/signup.jpeg)
 
 ---
 
