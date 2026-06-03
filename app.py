@@ -190,13 +190,41 @@ ORDER BY id DESC
 """, (session["user_id"],))
 
     history = cursor.fetchall()
+    # Analytics calculations
+
+    total_predictions = len(history)
+
+    if history:
+
+     scores = [item[2] for item in history]
+
+     average_score = round(sum(scores) / len(scores), 2)
+
+     highest_score = max(scores)
+
+     latest_grade = history[0][3]
+
+    else:
+
+     average_score = 0
+
+     highest_score = 0
+
+     latest_grade = "-"
     # Send prediction to HTML page
     return render_template(
     "index.html",
     prediction=prediction,
     grade=grade,
     history=history,
-    graph_html=graph_html
+    graph_html=graph_html,
+    total_predictions=total_predictions,
+
+average_score=average_score,
+
+highest_score=highest_score,
+
+latest_grade=latest_grade,
 )
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
