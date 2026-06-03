@@ -45,7 +45,7 @@ https://student-performance-predictor-1mlt.onrender.com
 ## 📷 Screenshots
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.jpeg)
+![Dashboard](screenshots/dashboard_new.jpeg)
 
 ### Login Page
 ![Login](screenshots/login.jpeg)
