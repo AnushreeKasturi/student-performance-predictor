@@ -8,14 +8,21 @@ https://student-performance-predictor-1mlt.onrender.com
 
 ---
 
-## 📌 Features
 
-- 🔐 User Authentication (Login / Signup / Logout)
+
+## ✨ Features
+
+- 🔐 Secure User Authentication (Signup / Login / Logout)
+- 🔒 Password Hashing using Werkzeug Security
 - 📊 Student Performance Prediction using Machine Learning
-- 📈 Interactive Analytics Dashboard
+- 📈 Interactive Analytics Dashboard with Trendline Graphs
+- 🧠 Linear Regression Model using Scikit-learn
 - 🗂️ SQLite Database Integration
 - 👤 User-Specific Prediction History
-- 🌐 Fully Deployed Web Application
+- 📉 Real-Time Data Visualization using Plotly
+- 📱 Responsive Modern Dashboard UI
+- 🌐 Fully Deployed Flask Web Application
+- 🚀 GitHub + Render Deployment Integration
 
 ---
 
