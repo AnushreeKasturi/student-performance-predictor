@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Performance Predictor</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <a href="/logout">
+    <button>Logout</button>
+</a>
+
+        <h1>Student Performance Predictor</h1>
+
+        <form method="POST">
+
+            <input type="number" name="attendance" placeholder="Attendance %" required>
+
+            <input type="number" name="study_hours" placeholder="Study Hours" required>
+
+            <input type="number" name="internal_marks" placeholder="Internal Marks" required>
+
+            <input type="number" name="assignments" placeholder="Assignment Marks" required>
+
+            <button type="submit">Predict</button>
+
+        </form>
+
+        {% if prediction %}
+
+            <div class="result">
+
+                <h2>Predicted Final Score: {{ prediction }}</h2>
+
+                <h2>Predicted Grade: {{ grade }}</h2>
+
+            </div>
+
+        {% endif %}
+        <h2>Prediction History</h2>
+
+<table>
+
+    <tr>
+        <th>Attendance</th>
+        <th>Study Hours</th>
+        <th>Predicted Score</th>
+        <th>Grade</th>
+    </tr>
+
+    {% for item in history %}
+
+    <tr>
+
+    <td>{{ item[0] }}</td>
+
+    <td>{{ item[1] }}</td>
+
+    <td>{{ item[2] }}</td>
+
+    <td>{{ item[3] }}</td>
+
+</tr>
+
+    {% endfor %}
+
+</table>
+<div class="graph">
+
+    {{ graph_html | safe }}
+
+</div>
+
+    </div>
+
+</body>
+
+</html>

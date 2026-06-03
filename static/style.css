@@ -1,0 +1,184 @@
+body {
+    background-color: #121212;
+    font-family: Arial, sans-serif;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+
+    margin: 0;
+    padding: 30px;
+}
+
+.container {
+    background-color: #1e1e1e;
+
+    padding: 40px;
+
+    border-radius: 15px;
+
+    width: 400px;
+
+    text-align: center;
+
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+input {
+    width: 90%;
+
+    padding: 12px;
+
+    margin: 10px 0;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    margin-top: 15px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.result {
+    margin-top: 25px;
+
+    background-color: #2c2c2c;
+
+    padding: 15px;
+
+    border-radius: 10px;
+}
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+}
+
+td {
+    background-color: #222;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+.graph {
+    margin-top: 30px;
+}
+.js-plotly-plot {
+    border-radius: 10px;
+    overflow: hidden;
+}
+.auth-container {
+
+    background-color: #1e1e1e;
+
+    padding: 40px;
+
+    border-radius: 15px;
+
+    width: 350px;
+
+    text-align: center;
+
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+
+    margin-top: 80px;
+}
+
+.auth-container h1 {
+
+    margin-bottom: 30px;
+}
+
+.auth-container input {
+
+    width: 90%;
+
+    padding: 12px;
+
+    margin: 10px 0;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+}
+
+.auth-container button {
+
+    background-color: #4CAF50;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    margin-top: 15px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    width: 100%;
+}
+
+.auth-container button:hover {
+
+    background-color: #45a049;
+}
+
+.auth-container a {
+
+    color: #4CAF50;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}
+
+.auth-container p {
+
+    margin-top: 20px;
+}
