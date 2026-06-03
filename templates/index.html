@@ -31,11 +31,14 @@
 
 </div>
 
-    <div class="container">
-        <div class="card">
+   <div class="container">
 
-        <h1>Student Performance Predictor</h1>
+    <h1 class="main-title">
+        Student Performance Predictor
+    </h1>
 
+    <div class="card">
+        <div class="section-card">
         <form method="POST">
 
             <input type="number" name="attendance" placeholder="Attendance %" required>
@@ -49,8 +52,10 @@
             <button type="submit">Predict</button>
 
         </form>
+        </div>
 
         {% if prediction %}
+        <div class="section-card">
 
             <div class="result">
 
@@ -60,8 +65,10 @@
 
             </div>
         </div>
+        
 
         {% endif %}
+        <div class="section-card">
         <h2>Prediction History</h2>
 
 <table>
@@ -90,6 +97,8 @@
     {% endfor %}
 
 </table>
+</div>
+<div class="section-card">
 <div class="graph">
 
     {{ graph_html | safe }}
@@ -97,7 +106,8 @@
 </div>
 
     </div>
-
+</div>
+</div>
 </body>
 
 </html>
