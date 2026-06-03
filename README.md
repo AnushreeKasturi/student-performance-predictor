@@ -60,4 +60,4 @@ https://student-performance-predictor-1mlt.onrender.com
 Clone repository:
 
 ```bash
-git clone YOUR_GITHUB_REPO_LINK
+git clone https://github.com/AnushreeKasturi/student-performance-predictor.git
