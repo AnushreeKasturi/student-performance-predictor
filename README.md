@@ -45,10 +45,13 @@ https://student-performance-predictor-1mlt.onrender.com
 ## 📷 Screenshots
 
 ### Dashboard
-(Add screenshot here later)
+![Dashboard](screenshots/dashboard.jpeg)
 
 ### Login Page
-(Add screenshot here later)
+![Login](screenshots/login.png)
+
+### Signup Page
+![Signup](screenshots/signup.png)
 
 ---
 
