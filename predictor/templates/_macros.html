@@ -1,0 +1,28 @@
+{% macro wtf_field(field, type="text", autocomplete=None) %}
+<label class="field">
+    <span class="field-label">{{ field.label.text }}</span>
+    {{ field(type=type, autocomplete=autocomplete, class="input" ~ (" input-error" if field.errors else ""), required=True) }}
+    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+</label>
+{% endmacro %}
+
+{% macro feature_field(f, values, errors) %}
+<label class="field" title="{{ f.help }}">
+    <span class="field-label">{{ f.label }}</span>
+    {% set current = values.get(f.name, '') %}
+    {% if current is number and current == current | int %}{% set current = current | int %}{% endif %}
+    {% if f.kind == 'choice' %}
+    <select name="{{ f.name }}" class="input{{ ' input-error' if f.name in errors }}" required>
+        {% for value, text in f.choices %}
+        <option value="{{ value }}" {{ 'selected' if current == value }}>{{ text }}</option>
+        {% endfor %}
+    </select>
+    {% else %}
+    <input type="number" name="{{ f.name }}" class="input{{ ' input-error' if f.name in errors }}"
+           min="{{ f.min | int }}" max="{{ f.max | int }}" step="{{ f.step }}"
+           value="{{ current }}" placeholder="{{ f.min | int }}–{{ f.max | int }}" required>
+    {% endif %}
+    <span class="field-help">{{ f.help }}</span>
+    {% if f.name in errors %}<span class="field-error">{{ errors[f.name] }}</span>{% endif %}
+</label>
+{% endmacro %}

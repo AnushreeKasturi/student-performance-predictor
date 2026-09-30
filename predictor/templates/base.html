@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Student Performance Predictor{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar">
+        <a class="logo" href="{{ url_for('dashboard.index') }}">🎓 Student Performance Predictor</a>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.index') }}" class="{{ 'active' if request.blueprint == 'dashboard' }}">My predictions</a>
+            {% if current_user.is_teacher %}
+            <a href="{{ url_for('classroom.index') }}" class="{{ 'active' if request.blueprint == 'classroom' }}">Class insights</a>
+            {% endif %}
+        </div>
+        <div class="nav-right">
+            <span class="muted">Signed in as <strong>{{ current_user.username }}</strong></span>
+            <form method="POST" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-ghost">Log out</button>
+            </form>
+        </div>
+    </nav>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.is_demo %}
+    <div class="demo-banner" role="status">
+        You're exploring a demo account{{ ' (teacher view)' if current_user.is_teacher }}: feel free to click around, nothing here is shared.
+        It's deleted after 24 hours. <a href="{{ url_for('auth.signup') }}">Create your own account</a>
+    </div>
+    {% endif %}
+
+    <main class="{% block main_class %}container{% endblock %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_macros.html" import wtf_field %}
+{% block title %}Sign up · Student Performance Predictor{% endblock %}
+{% block main_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <h1>Create account</h1>
+    <p class="muted">Passwords need at least 8 characters.</p>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        {{ wtf_field(form.username, autocomplete="username") }}
+        {{ wtf_field(form.password, type="password", autocomplete="new-password") }}
+        {{ wtf_field(form.confirm, type="password", autocomplete="new-password") }}
+        <fieldset class="field role-choice">
+            <legend class="field-label">{{ form.role.label.text }}</legend>
+            {% for option in form.role %}
+            <label class="radio">{{ option() }} {{ option.label.text }}</label>
+            {% endfor %}
+        </fieldset>
+        <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+    </form>
+    <p class="muted">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+</div>
+{% endblock %}

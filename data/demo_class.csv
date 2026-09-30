@@ -1,0 +1,13 @@
+student,subject,period1_score,period2_score,study_hours,absences,failures,goout,health,higher,internet
+Aarav,math,55,60,1,2,0,3,3,yes,yes
+Bea,portuguese,55,60,1,0,0,3,4,yes,yes
+Chen,math,50,60,3.5,4,1,5,5,yes,yes
+Divya,portuguese,45,50,3.5,0,2,2,5,no,no
+Elif,math,30,45,1,14,2,2,5,yes,yes
+Farah,portuguese,55,55,1,4,0,2,5,yes,no
+Gabriel,portuguese,50,55,7.5,2,0,2,3,yes,no
+Hana,math,50,45,7.5,2,0,2,5,yes,yes
+Ivan,math,50,45,3.5,0,0,4,5,yes,no
+Jaya,math,65,65,7.5,0,0,2,5,yes,yes
+Kofi,math,70,70,3.5,0,0,2,3,yes,yes
+Lina,portuguese,75,85,7.5,0,0,4,1,yes,yes

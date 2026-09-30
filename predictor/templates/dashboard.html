@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% from "_macros.html" import feature_field %}
+
+{% block content %}
+<section class="stats" aria-label="Your summary">
+    <div class="stat"><span class="stat-label">Predictions</span><span class="stat-value">{{ stats.total }}</span></div>
+    <div class="stat"><span class="stat-label">Average score</span><span class="stat-value">{{ stats.average if stats.average is not none else '–' }}</span></div>
+    <div class="stat"><span class="stat-label">Best score</span><span class="stat-value">{{ stats.best if stats.best is not none else '–' }}</span></div>
+    <div class="stat"><span class="stat-label">Latest grade</span><span class="stat-value">{{ stats.latest_grade or '–' }}</span></div>
+</section>
+
+<div class="grid-2">
+    <section class="card">
+        <h2>Predict a final score</h2>
+        <p class="muted">Scores are out of 100. Hover a field for details.</p>
+        <form method="POST" action="{{ url_for('dashboard.predict') }}" class="feature-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% for f in features %}{{ feature_field(f, values, errors) }}{% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Predict</button>
+        </form>
+    </section>
+
+    <section class="card" id="result">
+        {% if result %}
+        {% set ex = result.explanation %}
+        <h2>Prediction</h2>
+        <div class="hero">
+            <div>
+                <span class="hero-value">{{ '%.1f' % result.predicted_score }}</span>
+                <span class="hero-unit">/ 100</span>
+            </div>
+            <span class="grade grade-{{ result.grade }}">Grade {{ result.grade }}</span>
+        </div>
+        <p class="muted">90% prediction range: <strong>{{ '%.0f' % result.lower }}–{{ '%.0f' % result.upper }}</strong></p>
+        <a class="btn btn-ghost" href="{{ url_for('dashboard.prediction_report', prediction_id=result.id) }}">Download PDF report</a>
+
+        <h3>Why this score?</h3>
+        <p class="muted small">Points each factor adds or removes compared with a typical student.</p>
+        {% set impacts = ex.impacts | selectattr('value', 'ne', 0) | list %}
+        {% set maxabs = (impacts | map(attribute='value') | map('abs') | max) if impacts else 1 %}
+        <ul class="impacts">
+            {% for imp in impacts[:6] %}
+            {% set pct = (50 * (imp.value | abs) / maxabs) | round(1) %}
+            <li class="impact" title="{{ imp.label }}: {{ '%+.1f' % imp.value }} points">
+                <span class="impact-label">{{ imp.label }}</span>
+                <span class="impact-track">
+                    <span class="impact-bar {{ 'pos' if imp.value > 0 else 'neg' }}"
+                          style="width: {{ pct }}%; {{ 'left: 50%' if imp.value > 0 else 'right: 50%' }}"></span>
+                </span>
+                <span class="impact-value">{{ '%+.1f' % imp.value }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h3>What could raise it?</h3>
+        <p class="muted small">What-if estimates from patterns in the data. They show associations, not guaranteed causes.</p>
+        {% if ex.recommendations %}
+        <ul class="recs">
+            {% for rec in ex.recommendations %}
+            <li><span>{{ rec.message }}</span><span class="rec-gain">+{{ '%.1f' % rec.gain }} → {{ '%.1f' % rec.new_score }}</span></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="muted">No single change to study time, absences or social time raises this prediction noticeably.</p>
+        {% endif %}
+        {% else %}
+        <h2>How it works</h2>
+        <p>A <strong>{{ model.selected.model }}</strong> model trained on {{ model.dataset.rows }} real student records
+           predicts your final score from your earlier grades, study habits and background.</p>
+        <p class="muted">Each prediction comes with a 90% range, an explanation of which factors drove it,
+           and suggestions for what would raise it.</p>
+        {% endif %}
+    </section>
+</div>
+
+<section class="card">
+    <h2>Your progress</h2>
+    {% if chart_html %}
+    <div class="chart">{{ chart_html | safe }}</div>
+    {% else %}
+    <p class="muted">Make at least two predictions to see your trend over time.</p>
+    {% endif %}
+</section>
+
+<section class="card" id="history">
+    <div class="card-header">
+        <h2>Prediction history</h2>
+        {% if history %}
+        <div class="actions">
+            <a class="btn btn-ghost" href="{{ url_for('dashboard.export_history') }}">Export CSV</a>
+            <form method="POST" action="{{ url_for('dashboard.clear_history') }}"
+                  onsubmit="return confirm('Delete all of your predictions?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger">Clear all</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% if history %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th><th>Subject</th><th class="num">P1</th><th class="num">P2</th>
+                    <th class="num">Study h</th><th class="num">Absences</th>
+                    <th class="num">Score</th><th class="num">Range</th><th>Grade</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in history %}
+                <tr>
+                    <td><a href="{{ url_for('dashboard.index', result=p.id) }}#result">{{ p.created_at.strftime('%d %b %Y, %H:%M') }}</a></td>
+                    <td>{{ p.subject | capitalize }}</td>
+                    <td class="num">{{ p.period1_score | round(1) }}</td>
+                    <td class="num">{{ p.period2_score | round(1) }}</td>
+                    <td class="num">{{ p.study_hours | round(1) }}</td>
+                    <td class="num">{{ p.absences | int }}</td>
+                    <td class="num"><strong>{{ '%.1f' % p.predicted_score }}</strong></td>
+                    <td class="num muted">{{ '%.0f' % p.lower }}–{{ '%.0f' % p.upper }}</td>
+                    <td><span class="grade grade-{{ p.grade }}">{{ p.grade }}</span></td>
+                    <td class="row-actions">
+                        <a class="btn-icon" href="{{ url_for('dashboard.prediction_report', prediction_id=p.id) }}" aria-label="Download PDF report" title="PDF report">PDF</a>
+                        <form method="POST" action="{{ url_for('dashboard.delete_prediction', prediction_id=p.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-icon" aria-label="Delete prediction" title="Delete">✕</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="muted">No predictions yet.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>About the model</h2>
+    <div class="grid-2">
+        <div>
+            <p><strong>{{ model.selected.model }}</strong>, chosen from {{ model.comparison | length }} models by 5-fold cross-validation
+               on the <a href="https://archive.ics.uci.edu/dataset/320/student+performance" target="_blank" rel="noopener">UCI Student Performance</a>
+               dataset ({{ model.dataset.rows }} students who sat the final exam).</p>
+            <table class="compact">
+                <thead><tr><th>Held-out test set</th><th class="num">R²</th><th class="num">MAE</th><th class="num">RMSE</th></tr></thead>
+                <tbody>
+                    <tr><td>{{ model.selected.model }}</td>
+                        <td class="num">{{ model.selected.test.r2 }}</td><td class="num">{{ model.selected.test.mae }}</td><td class="num">{{ model.selected.test.rmse }}</td></tr>
+                    <tr class="muted"><td>Baseline ({{ model.baseline.name }})</td>
+                        <td class="num">{{ model.baseline.test.r2 }}</td><td class="num">{{ model.baseline.test.mae }}</td><td class="num">{{ model.baseline.test.rmse }}</td></tr>
+                </tbody>
+            </table>
+            <p class="muted small">Errors are in points out of 100. The 90% range is calibrated on cross-validation residuals
+               (±{{ model.interval.halfwidth }} points, {{ '%.0f' % (100 * model.interval.test_coverage) }}% coverage on the test set).</p>
+        </div>
+        <div>
+            <h3>What the model relies on most</h3>
+            <p class="muted small">Global feature importance ({{ model.feature_importance.method }}), in points.</p>
+            <ul class="importance">
+                {% for bar in model.importance_bars %}
+                <li title="{{ bar.label }}: {{ bar.value }}">
+                    <span class="impact-label">{{ bar.label }}</span>
+                    <span class="importance-track"><span class="importance-bar" style="width: {{ bar.pct }}%"></span></span>
+                    <span class="impact-value">{{ '%.2f' % bar.value }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

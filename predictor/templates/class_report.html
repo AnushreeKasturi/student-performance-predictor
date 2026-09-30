@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ report.name }} · Student Performance Predictor{% endblock %}
+
+{% block content %}
+<div class="card-header">
+    <div>
+        <h1>{{ report.name }}</h1>
+        <p class="muted">Uploaded {{ report.created_at.strftime('%d %b %Y, %H:%M') }} ·
+           <a href="{{ url_for('classroom.index') }}">All classes</a></p>
+    </div>
+    <a class="btn btn-ghost" href="{{ url_for('classroom.export', report_id=report.id) }}">Export CSV</a>
+</div>
+
+<section class="stats" aria-label="Class summary">
+    <div class="stat"><span class="stat-label">Students</span><span class="stat-value">{{ summary.students }}</span></div>
+    <div class="stat"><span class="stat-label">Average predicted score</span><span class="stat-value">{{ summary.average }}</span></div>
+    <div class="stat"><span class="stat-label">At risk (predicted &lt; 50)</span><span class="stat-value">{{ summary.at_risk }}</span></div>
+    <div class="stat"><span class="stat-label">Watch (could fall below 50)</span><span class="stat-value">{{ summary.watch }}</span></div>
+</section>
+
+<div class="grid-2">
+    <section class="card">
+        <h2>Predicted grade distribution</h2>
+        <ul class="importance">
+            {% for bar in summary.grade_bars %}
+            <li title="Grade {{ bar.grade }}: {{ bar.count }} students">
+                <span class="impact-label">Grade {{ bar.grade }}</span>
+                <span class="importance-track">{% if bar.count %}<span class="importance-bar" style="width: {{ bar.pct }}%"></span>{% endif %}</span>
+                <span class="impact-value">{{ bar.count }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section class="card">
+        <h2>How to read this</h2>
+        <p><span class="badge badge-risk">At risk</span> the predicted score is below the pass mark of 50.</p>
+        <p><span class="badge badge-watch">Watch</span> the prediction passes, but a fail is inside its 90% range.</p>
+        <p><span class="badge badge-ok">On track</span> even the low end of the range is a pass.</p>
+        <p class="muted small">Students are sorted by risk, then by predicted score. "Main drag" is the factor that lowers
+           that student's prediction the most compared with a typical student.</p>
+    </section>
+</div>
+
+<section class="card">
+    <h2>Students</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th><th>Status</th><th class="num">Score</th><th class="num">Range</th><th>Grade</th>
+                    <th>Subject</th><th class="num">P2</th><th class="num">Absences</th><th>Main drag</th><th>Suggestion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in report.rows %}
+                <tr>
+                    <td>{{ r.student }}</td>
+                    <td><span class="badge {{ {'At risk': 'badge-risk', 'Watch': 'badge-watch'}.get(r.risk, 'badge-ok') }}">{{ r.risk }}</span></td>
+                    <td class="num"><strong>{{ '%.1f' % r.score }}</strong></td>
+                    <td class="num muted">{{ '%.0f' % r.lower }}–{{ '%.0f' % r.upper }}</td>
+                    <td><span class="grade grade-{{ r.grade }}">{{ r.grade }}</span></td>
+                    <td>{{ r.subject | capitalize }}</td>
+                    <td class="num">{{ r.period2_score | round(1) }}</td>
+                    <td class="num">{{ r.absences | int }}</td>
+                    <td>{{ r.top_negative or '–' }}</td>
+                    <td class="muted">{{ r.suggestion or '–' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

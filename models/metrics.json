@@ -1,0 +1,105 @@
+{
+  "trained_at": "2026-09-30T10:38:45+00:00",
+  "dataset": {
+    "rows": 991,
+    "train": 792,
+    "test": 199,
+    "excluded_non_sitters": 53
+  },
+  "baseline": {
+    "name": "final = period 2 score",
+    "test": {
+      "r2": 0.883,
+      "mae": 3.47,
+      "rmse": 4.94
+    }
+  },
+  "comparison": [
+    {
+      "model": "Linear Regression",
+      "cv": {
+        "r2": 0.904,
+        "mae": 3.31,
+        "rmse": 4.52
+      },
+      "params": {}
+    },
+    {
+      "model": "Ridge Regression",
+      "cv": {
+        "r2": 0.904,
+        "mae": 3.31,
+        "rmse": 4.52
+      },
+      "params": {
+        "ridge__alpha": 1
+      }
+    },
+    {
+      "model": "Random Forest",
+      "cv": {
+        "r2": 0.896,
+        "mae": 3.4,
+        "rmse": 4.69
+      },
+      "params": {
+        "max_features": 0.5,
+        "min_samples_leaf": 5
+      }
+    },
+    {
+      "model": "Gradient Boosting",
+      "cv": {
+        "r2": 0.902,
+        "mae": 3.28,
+        "rmse": 4.56
+      },
+      "params": {
+        "learning_rate": 0.03,
+        "max_depth": 2,
+        "n_estimators": 300
+      }
+    },
+    {
+      "model": "Monotonic Gradient Boosting",
+      "cv": {
+        "r2": 0.896,
+        "mae": 3.35,
+        "rmse": 4.69
+      },
+      "params": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "min_samples_leaf": 10
+      }
+    }
+  ],
+  "selected": {
+    "model": "Linear Regression",
+    "test": {
+      "r2": 0.91,
+      "mae": 3.52,
+      "rmse": 4.35
+    }
+  },
+  "interval": {
+    "coverage_target": 0.9,
+    "halfwidth": 6.84,
+    "test_coverage": 0.874
+  },
+  "feature_importance": {
+    "method": "mean |SHAP value|",
+    "values": {
+      "period2_score": 9.503,
+      "period1_score": 1.478,
+      "is_math": 0.601,
+      "health": 0.281,
+      "failures": 0.198,
+      "goout": 0.187,
+      "absences": 0.164,
+      "internet": 0.151,
+      "studytime": 0.088,
+      "higher": 0.075
+    }
+  }
+}

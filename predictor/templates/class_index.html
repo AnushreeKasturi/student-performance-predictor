@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Class insights · Student Performance Predictor{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Analyse a class</h2>
+    <p class="muted">Upload a CSV with one row per student to get predicted final scores, risk flags
+       and the main factor holding each student back. Up to 500 students per file.</p>
+    <p><a href="{{ url_for('classroom.template') }}">Download the CSV template</a>
+       <span class="muted">· columns: student, {{ columns | join(', ') }}</span></p>
+
+    <form method="POST" action="{{ url_for('classroom.upload') }}" enctype="multipart/form-data" class="upload">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="field">
+            <span class="field-label">Class name (optional)</span>
+            <input type="text" name="name" class="input" maxlength="120" placeholder="e.g. Maths 11B, Term 2">
+        </label>
+        <label class="field">
+            <span class="field-label">CSV file</span>
+            <input type="file" name="file" accept=".csv,text/csv" class="input" required>
+        </label>
+        <button type="submit" class="btn btn-primary">Upload &amp; predict</button>
+    </form>
+
+    {% if errors %}
+    <div class="flash flash-error" style="margin-top: 16px">
+        <ul>
+            {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+        {% if more_errors %}<p>…and {{ more_errors }} more.</p>{% endif %}
+    </div>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>Saved class reports</h2>
+    {% if reports %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Class</th><th>Uploaded</th><th class="num">Students</th><th class="num">At risk</th><th></th></tr></thead>
+            <tbody>
+                {% for r in reports %}
+                <tr>
+                    <td><a href="{{ url_for('classroom.report', report_id=r.id) }}">{{ r.name }}</a></td>
+                    <td>{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+                    <td class="num">{{ r.rows | length }}</td>
+                    <td class="num">{{ r.rows | selectattr('risk', 'equalto', 'At risk') | list | length }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('classroom.delete', report_id=r.id) }}"
+                              onsubmit="return confirm('Delete this class report?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-icon" aria-label="Delete report" title="Delete">✕</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="muted">No class reports yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

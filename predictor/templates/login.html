@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import wtf_field %}
+{% block title %}Log in · Student Performance Predictor{% endblock %}
+{% block main_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <h1>Welcome back</h1>
+    <p class="muted">Log in to predict final scores and track your progress.</p>
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        {{ wtf_field(form.username, autocomplete="username") }}
+        {{ wtf_field(form.password, type="password", autocomplete="current-password") }}
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+    <p class="muted">Don't have an account? <a href="{{ url_for('auth.signup') }}">Create one</a></p>
+
+    <div class="demo-box">
+        <p><strong>Just looking?</strong> Try it instantly with a pre-filled demo account, no sign-up needed.</p>
+        <div class="demo-actions">
+            <form method="POST" action="{{ url_for('demo.start', role='student') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary">Try as a student</button>
+            </form>
+            <form method="POST" action="{{ url_for('demo.start', role='teacher') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-ghost">Try as a teacher</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
